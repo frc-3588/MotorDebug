@@ -19,15 +19,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * the code necessary to operate a robot with tank drive.
  */
 public class Robot extends TimedRobot {
-  private Joystick operator = new Joystick(0);
   private CANSparkMax kController;
-  private int controllerId;
-  private double speed;
+  private int controllerId = 0;
+  private double speed = 0;
   @Override
   public void robotInit() {
     SmartDashboard.putNumber("Controller ID", controllerId);
     SmartDashboard.putNumber("Speed", speed);
     controllerId = (int)SmartDashboard.getNumber("Controller ID", 0);
+    
     kController = new CANSparkMax(controllerId, MotorType.kBrushless);
     kController.set(speed);
   }
@@ -38,8 +38,10 @@ public class Robot extends TimedRobot {
     double newMotorSpeed = SmartDashboard.getNumber("Speed", 0);
 
     if (newControllerID != controllerId){
+      kController.set(0);
       controllerId = newControllerID;
       kController = new CANSparkMax(newControllerID, MotorType.kBrushless);
+      kController.set(newMotorSpeed);
     }
 
     if(newMotorSpeed != speed){
